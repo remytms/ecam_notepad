@@ -4,8 +4,10 @@ namespace NotepadBundle\Controller;
 
 use NotepadBundle\Entity\Category;
 use NotepadBundle\Entity\Note;
+use NotepadBundle\Form\NoteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/notepad/note")
@@ -46,4 +48,32 @@ class NoteController extends Controller
                 'notes' => $notes,
             ));
     }
+
+    /**
+     * @Route("/new", name="notepad_note_new")
+     */
+    public function newAction(Request $request)
+    {
+        $note = new Note();
+        $form = $this->createForm(NoteType::class, $note);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $note = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($note);
+            $em->flush();
+
+            return $this->redirectToRoute('notepad_note_list');
+        }
+
+        return $this->render(
+            'NotepadBundle:Note:new_note.html.twig', 
+            array(
+                'form' => $form->createView(),
+            ));
+    }
+
 }

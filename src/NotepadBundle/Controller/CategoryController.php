@@ -5,8 +5,8 @@ namespace NotepadBundle\Controller;
 use NotepadBundle\Entity\Category;
 use NotepadBundle\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/notepad/category")

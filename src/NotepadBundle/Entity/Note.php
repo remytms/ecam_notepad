@@ -3,6 +3,7 @@
 namespace NotepadBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Note
@@ -24,6 +25,7 @@ class Note
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
@@ -31,6 +33,7 @@ class Note
     /**
      * @var \DateTime
      *
+     * @Assert\DateTime()
      * @ORM\Column(name="date", type="datetime")
      */
     private $date;
@@ -38,6 +41,7 @@ class Note
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="content", type="text")
      */
     private $content;
@@ -45,6 +49,7 @@ class Note
     /**
      * @var Category
      *
+     * @Assert\NotNull()
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="notes")
      */
     private $category;

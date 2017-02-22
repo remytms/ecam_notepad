@@ -2,8 +2,8 @@
 
 namespace NotepadBundle\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category
@@ -44,6 +44,14 @@ class Category
     public function __construct()
     {
         $this->notes = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * String representation
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 
     /**
