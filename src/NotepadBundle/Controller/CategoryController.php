@@ -4,9 +4,10 @@ namespace NotepadBundle\Controller;
 
 use NotepadBundle\Entity\Category;
 use NotepadBundle\Form\CategoryType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/notepad/category")
@@ -51,7 +52,14 @@ class CategoryController extends Controller
      */
     public function newAction(Request $request)
     {
-        $category = new Category();
+        return $this->editAction($request, new Category());
+    }
+
+    /**
+     * @Route("/edit/{category}", name="notepad_category_edit")
+     */
+    public function editAction(Request $request, Category $category)
+    {
         $form = $this->createForm(CategoryType::class, $category);
 
         $form->handleRequest($request);
@@ -71,5 +79,25 @@ class CategoryController extends Controller
             array(
                 'form' => $form->createView(),
             ));
+    }
+
+    /**
+     * @Route("/delete/{category}", name="notepad_category_delete")
+     */
+    public function deleteAction(Category $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if ($category->getNotes()->isEmpty()) {
+            $em->remove($category);
+            $em->flush();
+        } else {
+            return new Response(
+                '<html><body>Cannot delete this category. Notes are
+                assigned to this category. Please delete all the
+                associated note before trying again.</body></html>');
+        }
+
+        return $this->redirectToRoute('notepad_category_list');
     }
 }

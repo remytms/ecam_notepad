@@ -5,8 +5,8 @@ namespace NotepadBundle\Controller;
 use NotepadBundle\Entity\Category;
 use NotepadBundle\Entity\Note;
 use NotepadBundle\Form\NoteType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -54,7 +54,14 @@ class NoteController extends Controller
      */
     public function newAction(Request $request)
     {
-        $note = new Note();
+        return $this->editAction($request, new Note());
+    }
+
+    /**
+     * @Route("/edit/{note}", name="notepad_note_edit")
+     */
+    public function editAction(Request $request, Note $note)
+    {
         $form = $this->createForm(NoteType::class, $note);
 
         $form->handleRequest($request);
@@ -76,4 +83,15 @@ class NoteController extends Controller
             ));
     }
 
+    /**
+     * @Route("/delete/{note}", name="notepad_note_delete")
+     */
+    public function deleteAction(Note $note)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($note);
+        $em->flush();
+
+        return $this->redirectToRoute('notepad_note_list');
+    }
 }
