@@ -2,9 +2,16 @@
 
 {% block title %}New Category{% endblock %}
 
+{% block pageheader %}New Category{% endblock %}
+
+{% block actions %}
+<a href="{{ path('notepad_category_list') }}"
+   class="btn btn-lg btn-default">
+  Retour
+</a>
+{% endblock %}
 
 {% block content %}
-<h1>New Category</h1>
 
 {{ form_start(form) }}
 {{ form_widget(form) }}

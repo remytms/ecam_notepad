@@ -2,9 +2,16 @@
 
 {% block title %}New Note{% endblock %}
 
+{% block pageheader %}New Note{% endblock %}
+
+{% block actions %}
+<a href="{{ path('notepad_note_list') }}"
+   class="btn btn-lg btn-default">
+  Back
+</a>
+{% endblock %}
 
 {% block content %}
-<h1>New Note</h1>
 
 {{ form_start(form) }}
 {{ form_widget(form) }}

@@ -4,13 +4,31 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Notepad{% endblock %} - Notepad</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
   </head>
   <body>
     {% block nav %}
     {% endblock %}
 
-    <div id="content">
+    <div class="container">
+      
+      <div class="page-header">
+        <div class="btn-toolbar pull-right">
+          {% block actions %}{% endblock %}
+        </div>
+        <h1>
+          {% block pageheader %}{% endblock %}
+        </h1>
+      </div>
+
       {% block content %}{% endblock %}
+
     </div>
+
+    <script
+         src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+    </script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
   </body>
 </html>
