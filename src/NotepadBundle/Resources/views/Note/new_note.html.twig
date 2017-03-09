@@ -5,6 +5,9 @@
 {% block pageheader %}New Note{% endblock %}
 
 {% block actions %}
+<button role="button" id="tag" class="btn btn-lg btn-default">
+  Add a tag
+</button>
 <a href="{{ path('notepad_note_list') }}"
    class="btn btn-lg btn-default">
   Back
@@ -17,4 +20,22 @@
 {{ form_widget(form) }}
 {{ form_end(form) }}
 
+{% endblock %}
+
+{% block script %}
+<script language="javascript">
+function wrapText(elementID, openTag, closeTag) {
+  var textArea = $('#' + elementID);
+  var len = textArea.val().length;
+  var start = textArea[0].selectionStart;
+  var end = textArea[0].selectionEnd;
+  var selectedText = textArea.val().substring(start, end);
+  var replacement = openTag + selectedText + closeTag;
+  textArea.val(textArea.val().substring(0, start) + replacement +
+  textArea.val().substring(end, len));
+}
+$('#tag').click(function() {
+  wrapText("note_content", "<tag>", "</tag>");
+});
+</script>
 {% endblock %}
