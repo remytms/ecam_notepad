@@ -67,8 +67,27 @@ class Note
      */
     public function isValid()
     {
-        $xml_header = '<?xml version="1.0" encoding="UTF-8" ?>';
-        $xml_schema = <<<EOT
+        $dom = new \DOMDocument();
+        try {
+            $dom->loadXML($this->getXMLContent());
+            $dom->schemaValidateSource($this->getXMLSchema());
+        } catch (\ErrorException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the xml schema.
+     *
+     * @return string
+     */
+    private function getXMLSchema()
+    {
+        return 
+<<<EOT
+<?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 <xs:element name="note">
   <xs:complexType mixed="true">
@@ -79,22 +98,6 @@ class Note
 </xs:element>
 </xs:schema>
 EOT;
-        // Add the header to the xml schema
-        $xml_schema = $xml_header . $xml_schema;
-        // Add the header and the root element to the content
-        $content = $xml_header . '<note>' . 
-            $this->getContent() .
-            '</note>';
-
-        $dom = new \DOMDocument();
-        try {
-            $dom->loadXML($content);
-            $dom->schemaValidateSource($xml_schema);
-        } catch (\ErrorException $e) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -192,6 +195,16 @@ EOT;
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * @return string
+     */
+    private function getXMLContent()
+    {
+        return 
+        '<?xml version="1.0" encoding="UTF-8" ?>' .
+        '<note>' . $this->getContent() . '</note>';
     }
 
     /**
