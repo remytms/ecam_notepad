@@ -63,6 +63,41 @@ class Note
     }
 
     /**
+     * @Assert\IsTrue(message="Content is not valid xml")
+     */
+    public function isValid()
+    {
+        $xml_header = '<?xml version="1.0" encoding="UTF-8" ?>';
+        $xml_schema = <<<EOT
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="note">
+  <xs:complexType mixed="true">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
+EOT;
+        // Add the header to the xml schema
+        $xml_schema = $xml_header . $xml_schema;
+        // Add the header and the root element to the content
+        $content = $xml_header . '<note>' . 
+            $this->getContent() .
+            '</note>';
+
+        $dom = new \DOMDocument();
+        try {
+            $dom->loadXML($content);
+            $dom->schemaValidateSource($xml_schema);
+        } catch (\ErrorException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Return an array representing this object.
      *
      * @return array
@@ -76,7 +111,6 @@ class Note
             'category' => $this->getCategory()->toArray(),
         );
     }
-
 
     /**
      * Get id
