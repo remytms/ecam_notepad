@@ -55,6 +55,18 @@ class Category
     }
 
     /**
+     * Return an array representing this object.
+     *
+     * @return array
+     */
+    public function toArray() {
+        return array(
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+        );
+    }
+
+    /**
      * Get id
      *
      * @return int

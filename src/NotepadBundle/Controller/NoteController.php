@@ -38,7 +38,8 @@ class NoteController extends Controller
      */
     public function listAction()
     {
-        $note_repository = $this->getDoctrine()->getRepository('NotepadBundle:Note');
+        $note_repository = $this->getDoctrine()
+            ->getRepository('NotepadBundle:Note');
 
         $notes = $note_repository->findAll();
 

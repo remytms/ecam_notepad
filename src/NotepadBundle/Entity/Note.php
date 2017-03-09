@@ -62,6 +62,21 @@ class Note
         $this->date = new \DateTime();
     }
 
+    /**
+     * Return an array representing this object.
+     *
+     * @return array
+     */
+    public function toArray() {
+        return array(
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'date' => $this->getDate()->format('Y-m-d'),
+            'content' => $this->getContent(),
+            'category' => $this->getCategory()->toArray(),
+        );
+    }
+
 
     /**
      * Get id
