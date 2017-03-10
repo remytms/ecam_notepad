@@ -5,6 +5,7 @@ namespace NotepadBundle\Controller;
 use NotepadBundle\Entity\Category;
 use NotepadBundle\Entity\Note;
 use NotepadBundle\Form\NoteType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,13 +36,33 @@ class NoteController extends Controller
 
     /**
      * @Route("/list", name="notepad_note_list")
+     * @Method({"GET", "POST"})
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
-        $notes = $note_repository->findAll();
+        $all_notes = $note_repository->findAll();
+        $notes = array();
+
+        if ($request->getMethod() === 'POST') {
+            $search_term = $request->request->get('srch');
+            foreach ($all_notes as $note) {
+                $dom = new \DOMDocument();
+                $dom->loadXML($note->getXMLContent());
+                $xpath = new \DOMXpath($dom);
+                $elements = $xpath->evaluate("/note/tag"); 
+                foreach ($elements as $element) {
+                    if ($element->nodeValue === $search_term)
+                        $notes[] = $note;
+                }
+            }
+        }
+
+        if ($request->getMethod() === 'GET')
+            $notes = $all_notes;
+
 
         return $this->render(
             'NotepadBundle:Note:list_note.html.twig',

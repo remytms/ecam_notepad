@@ -200,7 +200,7 @@ EOT;
     /**
      * @return string
      */
-    private function getXMLContent()
+    public function getXMLContent()
     {
         return 
         '<?xml version="1.0" encoding="UTF-8" ?>' .
