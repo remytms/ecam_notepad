@@ -45,18 +45,23 @@ class NoteController extends Controller
 
         $all_notes = $note_repository->findAll();
         $notes = array();
+        $search_term = "";
 
         if ($request->getMethod() === 'POST') {
             $search_term = $request->request->get('srch');
-            foreach ($all_notes as $note) {
-                $dom = new \DOMDocument();
-                $dom->loadXML($note->getXMLContent());
-                $xpath = new \DOMXpath($dom);
-                $elements = $xpath->evaluate("/note/tag"); 
-                foreach ($elements as $element) {
-                    if ($element->nodeValue === $search_term)
-                        $notes[] = $note;
+            if (!empty($search_term)) {
+                foreach ($all_notes as $note) {
+                    $dom = new \DOMDocument();
+                    $dom->loadXML($note->getXMLContent());
+                    $xpath = new \DOMXpath($dom);
+                    $elements = $xpath->evaluate("/note/tag"); 
+                    foreach ($elements as $element) {
+                        if ($element->nodeValue === $search_term)
+                            $notes[] = $note;
+                    }
                 }
+            } else {
+                $notes = $all_notes;
             }
         }
 
