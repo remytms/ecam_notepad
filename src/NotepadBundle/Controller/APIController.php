@@ -48,6 +48,34 @@ class APIController extends Controller
     }
 
     /**
+     * @Route("/tag/{search}/notes")
+     * @Method({"GET"})
+     */
+    public function searchNotesAction($search)
+    {
+        $note_repository = $this->getDoctrine()
+            ->getRepository('NotepadBundle:Note');
+
+        $notes = $note_repository->findAll();
+
+        $notes_array = array();
+
+        foreach ($notes as $note) {
+            $dom = new \DOMDocument();
+            $dom->loadXML($note->getXMLContent());
+            $xpath = new \DOMXpath($dom);
+            $elements = $xpath->evaluate("/note/tag"); 
+            foreach ($elements as $element) {
+                if ($element->nodeValue === $search)
+                    $notes_array[] = $note->toArray();
+            }
+        }
+
+        return new JsonResponse($notes_array);
+    }
+
+
+    /**
      * @Route("/notes/{note}")
      * @Method({"GET"})
      */
