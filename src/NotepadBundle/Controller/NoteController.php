@@ -68,6 +68,7 @@ class NoteController extends Controller
             'NotepadBundle:Note:list_note.html.twig',
             array(
                 'notes' => $notes,
+                'search' => $search_term,
             ));
     }
 
