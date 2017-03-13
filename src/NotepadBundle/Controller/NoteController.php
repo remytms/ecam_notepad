@@ -24,7 +24,10 @@ class NoteController extends Controller
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
-        $all_notes = $note_repository->findBy(array(), array('date' => 'desc'));
+        $all_notes = $note_repository->findBy(
+            array(), 
+            array('date' => 'desc')
+        );
         $notes = array();
         $search_term = "";
 

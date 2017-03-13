@@ -36,7 +36,10 @@ class APIController extends Controller
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
-        $notes = $note_repository->findAll();
+        $notes = $note_repository->findBy(
+            array(), 
+            array('date' => 'desc')
+        );
 
         $notes_array = array();
 
@@ -56,7 +59,10 @@ class APIController extends Controller
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
-        $notes = $note_repository->findAll();
+        $notes = $note_repository->findBy(
+            array(),
+            array('date' => 'desc')
+        );
 
         $notes_array = array();
 
