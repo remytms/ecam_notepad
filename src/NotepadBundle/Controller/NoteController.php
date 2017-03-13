@@ -16,25 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 class NoteController extends Controller
 {
     /**
-     * @Route("/create/{category}", name="notepad_note_create")
-     */
-    public function createAction(Category $category)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $note = new Note();
-
-        $note->setTitle("Test note");
-        $note->setContent("Blah, blah content for this note.");
-        $note->setCategory($category);
-
-        $em->persist($note);
-        $em->flush();
-
-        return $this->redirectToRoute('notepad_note_list');
-    }
-
-
-    /**
      * @Route("/list", name="notepad_note_list")
      * @Method({"GET", "POST"})
      */
@@ -43,7 +24,7 @@ class NoteController extends Controller
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
-        $all_notes = $note_repository->findAll();
+        $all_notes = $note_repository->findBy(array(), array('date' => 'desc'));
         $notes = array();
         $search_term = "";
 

@@ -15,22 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 class CategoryController extends Controller
 {
     /**
-     * @Route("/create/{name}", name="notepad_category_create")
-     */
-    public function createAction($name)
-    {
-        $category = new Category();
-        $em = $this->getDoctrine()->getManager();
-
-        $category->setName($name);
-
-        $em->persist($category);
-        $em->flush();
-
-        return $this->redirectToRoute('notepad_category_list');
-    }
-
-    /**
      * @Route("/list", name="notepad_category_list")
      */
     public function listAction()
