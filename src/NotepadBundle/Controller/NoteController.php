@@ -37,7 +37,8 @@ class NoteController extends Controller
                     $xpath = new \DOMXpath($dom);
                     $elements = $xpath->evaluate("/note/tag"); 
                     foreach ($elements as $element) {
-                        if ($element->nodeValue === $search_term)
+                        if (trim(strtolower($element->nodeValue)) === 
+                            trim(strtolower($search_term)))
                             $notes[] = $note;
                     }
                 }

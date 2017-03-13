@@ -66,7 +66,8 @@ class APIController extends Controller
             $xpath = new \DOMXpath($dom);
             $elements = $xpath->evaluate("/note/tag"); 
             foreach ($elements as $element) {
-                if ($element->nodeValue === $search)
+                if (trim(strtolower($element->nodeValue)) === 
+                    trim(strtolower($search)))
                     $notes_array[] = $note->toArray();
             }
         }
