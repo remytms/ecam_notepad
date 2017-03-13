@@ -36,10 +36,13 @@ class NoteController extends Controller
                     $dom->loadXML($note->getXMLContent());
                     $xpath = new \DOMXpath($dom);
                     $elements = $xpath->evaluate("/note/tag"); 
+                    $added = false;
                     foreach ($elements as $element) {
                         if (trim(strtolower($element->nodeValue)) === 
-                            trim(strtolower($search_term)))
+                            trim(strtolower($search_term)) && !$added) {
                             $notes[] = $note;
+                            $added = true;
+                        }
                     }
                 }
             } else {
