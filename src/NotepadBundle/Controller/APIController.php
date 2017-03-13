@@ -20,7 +20,7 @@ class APIController extends Controller
     /*
      * Status code constant for http responses
      */
-    const SC_ERROR = 400;
+    const SC_BADREQ = 400;
     const SC_NOTFOUND = 404;
 
     /*
@@ -105,13 +105,13 @@ class APIController extends Controller
 
         if (empty($content)) {
             $msg = "Content is empty";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $note_data = json_decode($content, true);
         if (!$note_data) {
             $msg = "Content is not a valid json";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $note = new Note();
@@ -127,7 +127,7 @@ class APIController extends Controller
 
         if (count($errors) > 0) {
             $response_array['error'] = "Note is not valid";
-            return new JsonResponse($response_array, self::SC_ERROR);
+            return new JsonResponse($response_array, self::SC_BADREQ);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -148,13 +148,13 @@ class APIController extends Controller
 
         if (empty($content)) {
             $msg = "Content is empty";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $note_data = json_decode($content, true);
         if (!$note_data) {
             $msg = "Content is not a valid json";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $category_repository = $this->getDoctrine()
@@ -179,7 +179,7 @@ class APIController extends Controller
 
         if (count($errors) > 0) {
             $response_array['error'] = "Note is not valid";
-            return new JsonResponse($response_array, self::SC_ERROR);
+            return new JsonResponse($response_array, self::SC_BADREQ);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -246,13 +246,13 @@ class APIController extends Controller
 
         if (empty($content)) {
             $msg = "Content is empty";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $category_data = json_decode($content, true);
         if (!$category_data) {
             $msg = "Content is not a valid json";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $category = new Category();
@@ -263,7 +263,7 @@ class APIController extends Controller
 
         if (count($errors) > 0) {
             $response_array['error'] = "Category is not valid";
-            return new JsonResponse($response_array, self::SC_ERROR);
+            return new JsonResponse($response_array, self::SC_BADREQ);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -284,13 +284,13 @@ class APIController extends Controller
 
         if (empty($content)) {
             $msg = "Content is empty";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         $category_data = json_decode($content, true);
         if (!$category_data) {
             $msg = "Content is not a valid json";
-            return new JsonResponse(['error' => $msg], self::SC_ERROR);
+            return new JsonResponse(['error' => $msg], self::SC_BADREQ);
         }
 
         if (array_key_exists('name', $category_data)) 
@@ -300,7 +300,7 @@ class APIController extends Controller
 
         if (count($errors) > 0) {
             $response_array['error'] = "Note is not valid";
-            return new JsonResponse($response_array, self::SC_ERROR);
+            return new JsonResponse($response_array, self::SC_BADREQ);
         }
 
         $em = $this->getDoctrine()->getManager();
