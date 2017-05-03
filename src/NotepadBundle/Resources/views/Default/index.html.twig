@@ -1,1 +1,34 @@
-Hello World!
+<html>
+<head>
+  <title>{% block title %}Notepad{% endblock %}</title>
+  <meta charset="utf-8">
+  <base href="http://localhost:8070/notepad/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon"
+                   href="{{ asset('bundles/notepad/js/favicon.ico') }}">
+  <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('bundles/notepad/js/styles.bundle.css')}}"
+        rel="stylesheet"/>
+</head>
+<body>
+  <div class="container">
+    <my-app>Loading...</my-app>
+  </div>
+  <script type="text/javascript"
+          src="{{ asset('bundles/notepad/js/inline.bundle.js')}}">
+  </script>
+  <script type="text/javascript"
+          src="{{ asset('bundles/notepad/js/polyfills.bundle.js')}}">
+  </script>
+  <script type="text/javascript"
+          src="{{ asset('bundles/notepad/js/vendor.bundle.js')}}">
+  </script>
+  <script type="text/javascript"
+          src="{{asset('bundles/notepad/js/main.bundle.js')}}">
+  </script>
+  <script
+       src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+  </script>
+  <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+</body>
+</html>

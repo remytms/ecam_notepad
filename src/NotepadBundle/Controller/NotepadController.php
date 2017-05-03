@@ -15,6 +15,7 @@ class NotepadController extends Controller
      */
     public function indexAction()
     {
-        return $this->redirectToRoute('notepad_note_list');
+        //return $this->redirectToRoute('notepad_note_list');
+        return $this->render('NotepadBundle:Default:index.html.twig');
     }
 }
