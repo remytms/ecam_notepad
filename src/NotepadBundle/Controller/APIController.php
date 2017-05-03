@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -29,10 +30,16 @@ class APIController extends Controller
 
     /**
      * @Route("/notes")
-     * @Method({"GET"})
+     * @Method({"GET", "OPTIONS"})
      */
-    public function allNotesAction()
+    public function allNotesAction(Request $request)
     {
+        $allowed_methods = 'GET, OPTIONS';
+
+        if ($request->isMethod('OPTIONS')) {
+            return $this->getCrossOriginResponse($allowed_methods);
+        }
+
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
@@ -47,15 +54,24 @@ class APIController extends Controller
             $notes_array[] = $note->toArray();
         }
 
-        return new JsonResponse($notes_array);
+        return $this->setCrossOriginResponse(
+            new JsonResponse($notes_array),
+            $allowed_methods
+        );
     }
 
     /**
      * @Route("/tag/{search}/notes")
-     * @Method({"GET"})
+     * @Method({"GET", "OPTIONS"})
      */
-    public function searchNotesAction($search)
+    public function searchNotesAction(Request $request, $search)
     {
+        $allowed_methods = 'GET, OPTIONS';
+
+        if ($request->isMethod('OPTIONS')) {
+            return $this->getCrossOriginResponse($allowed_methods);
+        }
+
         $note_repository = $this->getDoctrine()
             ->getRepository('NotepadBundle:Note');
 
@@ -81,9 +97,20 @@ class APIController extends Controller
             }
         }
 
-        return new JsonResponse($notes_array);
+        return $this->setCrossOriginResponse(
+            new JsonResponse($notes_array),
+            $allowed_methods
+        );
     }
 
+    /**
+     * @Route("/notes/{note}")
+     * @Method({"OPTIONS"})
+     */
+    public function getNotesCrossOriginAction(Note $note)
+    {
+        return $this->getCrossOriginResponse('GET, PATCH, DELETE, OPTIONS');
+    }
 
     /**
      * @Route("/notes/{note}")
@@ -91,15 +118,24 @@ class APIController extends Controller
      */
     public function getNotesAction(Note $note)
     {
-        return new JsonResponse($note->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($note->toArray()),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
     }
 
     /**
      * @Route("/categories/{category}/notes")
-     * @Method({"POST"})
+     * @Method({"POST", "OPTIONS"})
      */
     public function newNoteAction(Request $request, Category $category)
     {
+        $allowed_methods = 'POST, OPTIONS';
+
+        if ($request->isMethod('OPTIONS')) {
+            return $this->getCrossOriginResponse($allowed_methods);
+        }
+
         $content = $request->getContent();
         $validator = $this->get('validator');
 
@@ -134,7 +170,10 @@ class APIController extends Controller
         $em->persist($note);
         $em->flush();
 
-        return new JsonResponse($note->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($note->toArray()),
+            $allowed_methods
+        );
     }
 
     /**
@@ -186,7 +225,10 @@ class APIController extends Controller
         $em->persist($note);
         $em->flush();
 
-        return new JsonResponse($note->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($note->toArray()),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
     }
 
     /**
@@ -199,12 +241,33 @@ class APIController extends Controller
         $em->remove($note);
         $em->flush();
 
-        return new JsonResponse(['sucess' => true]);
+        return $this->setCrossOriginResponse(
+            new JsonResponse(['sucess' => true]),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
     }
 
     /*
      * Categories API
      */
+
+    /**
+     * @Route("/categories")
+     * @Method({"OPTIONS"})
+     */
+    public function getAllCategoriesCrossOriginAction()
+    {
+        return $this->getCrossOriginResponse('GET, POST, OPTIONS');
+    }
+
+    /**
+     * @Route("/categories/{category}")
+     * @Method({"OPTIONS"})
+     */
+    public function getCategoriesCrossOriginAction(Category $category)
+    {
+        return $this->getCrossOriginResponse('GET, PATCH, DELETE, OPTIONS');
+    }
 
     /**
      * @Route("/categories")
@@ -223,7 +286,10 @@ class APIController extends Controller
             $categories_array[] = $category->toArray();
         }
 
-        return new JsonResponse($categories_array);
+        return $this->setCrossOriginResponse(
+            new JsonResponse($categories_array),
+            'GET, POST, OPTIONS'
+        );
     }
 
     /**
@@ -232,7 +298,10 @@ class APIController extends Controller
      */
     public function getCategoriesAction(Category $category)
     {
-        return new JsonResponse($category->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($category->toArray()),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
     }
 
     /**
@@ -270,7 +339,10 @@ class APIController extends Controller
         $em->persist($category);
         $em->flush();
 
-        return new JsonResponse($category->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($category->toArray()),
+            'GET, POST, OPTIONS'
+        );
     }
 
     /**
@@ -307,7 +379,10 @@ class APIController extends Controller
         $em->persist($category);
         $em->flush();
 
-        return new JsonResponse($category->toArray());
+        return $this->setCrossOriginResponse(
+            new JsonResponse($category->toArray()),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
     }
 
     /**
@@ -320,6 +395,33 @@ class APIController extends Controller
         $em->remove($category);
         $em->flush();
 
-        return new JsonResponse(['sucess' => true]);
+        return $this->setCrossOriginResponse(
+            new JsonResponse(['sucess' => true]),
+            'GET, PATCH, DELETE, OPTIONS'
+        );
+    }
+
+    /**
+     * Cross-Origin response
+     *
+     * Args:
+     *     $methods: string containing all the accepted methods coma
+     *               separated
+     */
+    private function getCrossOriginResponse($methods)
+    {
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/text');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set("Access-Control-Allow-Methods", $methods);
+        return $response;
+    }
+
+    private function setCrossOriginResponse($response, $methods)
+    {
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set("Access-Control-Allow-Methods", $methods);
+        return $response;
     }
 }
